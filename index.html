@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AthenaMi - Telifsiz & Klasik Sinema Platformu</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mono: {
+                            950: '#080808',
+                            900: '#111111',
+                            850: '#171717',
+                            800: '#222222',
+                            700: '#333333',
+                            600: '#555555',
+                            400: '#888888',
+                            200: '#cccccc',
+                            100: '#f5f5f5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-white': '0 0 20px rgba(255, 255, 255, 0.15)',
+                        'glow-sm': '0 0 10px rgba(255, 255, 255, 0.1)',
+                        'card': '0 4px 20px rgba(0, 0, 0, 0.8)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #080808; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #404040; }
+        .glass { background: rgba(17, 17, 17, 0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-nav { background: rgba(8, 8, 8, 0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-border { border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.25s ease-in-out; }
+        .glow-border:hover { border-color: rgba(255, 255, 255, 0.5); box-shadow: 0 0 15px rgba(255, 255, 255, 0.12); }
+        video::cue { background: rgba(0, 0, 0, 0.85); color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); padding: 2px 8px; border-radius: 4px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-mono-950 text-mono-100 font-sans min-h-screen selection:bg-white selection:text-black flex flex-col antialiased">
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between h-16 gap-3">
+                <div class="flex items-center space-x-2.5 cursor-pointer select-none" onclick="filterCategory('all')">
+                    <div class="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-black shadow-glow-white">
+                        <i class="fa-solid fa-film text-xs"></i>
+                    </div>
+                    <div class="leading-none">
+                        <span class="text-xl font-extrabold tracking-tight text-white">Athena<span class="text-mono-400">Mi</span></span>
+                        <span class="block text-[8px] font-semibold tracking-widest text-mono-400 uppercase mt-0.5">OPEN CINEMA PLATFORM</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex items-center space-x-1 font-medium text-xs">
+                    <button onclick="filterCategory('all')" class="nav-btn px-3 py-1.5 rounded-md text-white hover:bg-white/10 transition">Anasayfa</button>
+                    <button onclick="filterGenre('Mystery / Thriller')" class="nav-btn px-3 py-1.5 rounded-md text-mono-400 hover:text-white hover:bg-white/10 transition">Gizem / Gerilim</button>
+                    <button onclick="filterGenre('Comedy / Romance')" class="nav-btn px-3 py-1.5 rounded-md text-mono-400 hover:text-white hover:bg-white/10 transition">Komedi</button>
+                    <button onclick="filterGenre('Sci-Fi / Horror')" class="nav-btn px-3 py-1.5 rounded-md text-mono-400 hover:text-white hover:bg-white/10 transition">Korku / B.Kurgu</button>
+                    <button onclick="filterCategory('series')" class="nav-btn px-3 py-1.5 rounded-md text-mono-400 hover:text-white hover:bg-white/10 transition">Seri Yayınlar</button>
+                    <button onclick="showMyList()" class="nav-btn px-3 py-1.5 rounded-md text-mono-400 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-bookmark text-white text-[10px]"></i>
+                        <span>Listem</span>
+                        <span id="watchlist-count" class="bg-white text-black text-[10px] px-1.5 py-0.2 rounded-full font-extrabold">0</span>
+                    </button>
+                </nav>
+
+                <div class="flex items-center space-x-2.5">
+                    <div class="relative">
+                        <div class="relative flex items-center">
+                            <input id="search-input" type="text" placeholder="Film, yönetmen ara..." 
+                                class="bg-mono-900/90 text-xs text-mono-100 placeholder-mono-600 rounded-full pl-8 pr-7 py-1.5 w-32 sm:w-52 focus:w-44 sm:focus:w-72 border border-mono-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white/40 transition-all duration-300">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 text-mono-500 text-xs"></i>
+                            <button id="clear-search" onclick="clearSearch()" class="hidden absolute right-2.5 text-mono-500 hover:text-white text-xs">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <div id="search-dropdown" class="hidden absolute top-full mt-2 right-0 left-0 sm:left-auto sm:w-80 glass rounded-xl shadow-card p-2 z-50 max-h-80 overflow-y-auto divide-y divide-mono-800"></div>
+                    </div>
+
+                    <a href="https://github.com" target="_blank" rel="noopener" class="hidden sm:flex items-center gap-1 bg-mono-900 hover:bg-mono-800 text-mono-200 border border-mono-800 px-2.5 py-1 rounded-full text-[10px] font-mono transition">
+                        <i class="fa-brands fa-github text-xs"></i>
+                        <span>GH-Pages Ready</span>
+                    </a>
+
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-mono-300 hover:text-white p-1">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden glass border-t border-mono-800 px-4 pt-2 pb-4 space-y-1 text-xs font-medium">
+            <button onclick="filterCategory('all'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-white hover:bg-white/10">Anasayfa</button>
+            <button onclick="filterGenre('Mystery / Thriller'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-mono-300 hover:bg-white/10">Gizem & Gerilim</button>
+            <button onclick="filterGenre('Comedy / Romance'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-mono-300 hover:bg-white/10">Komedi & Romantik</button>
+            <button onclick="filterGenre('Sci-Fi / Horror'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-mono-300 hover:bg-white/10">Korku & Bilim Kurgu</button>
+            <button onclick="showMyList(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-mono-300 hover:bg-white/10 flex items-center justify-between">
+                <span>Favori Listem</span>
+                <span id="mobile-watchlist-count" class="bg-white text-black text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-16">
+        <section id="hero-banner" class="relative w-full h-[62vh] min-h-[420px] max-h-[600px] overflow-hidden flex items-center border-b border-mono-850">
+            <div class="absolute inset-0 z-0">
+                <img id="hero-bg" src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1920&q=80" alt="Hero Backdrop" class="w-full h-full object-cover object-center filter grayscale contrast-125 brightness-75 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-r from-mono-950 via-mono-950/85 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-mono-950 via-transparent to-transparent"></div>
+            </div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
+                <div class="max-w-xl space-y-3">
+                    <div class="flex flex-wrap items-center gap-2 text-[11px] font-semibold">
+                        <span class="bg-white text-black px-2.5 py-0.5 rounded-md uppercase font-extrabold tracking-wider">TELİFSİZ KLASİK ŞAHESER</span>
+                        <span class="bg-mono-900 border border-mono-700 text-mono-200 px-2 py-0.5 rounded-md">PUBLIC DOMAIN</span>
+                        <span class="bg-mono-900 border border-mono-700 text-mono-200 px-2 py-0.5 rounded-md">TR / EN ALTYAZI</span>
+                        <span class="text-white font-bold flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded-md border border-mono-700">
+                            <i class="fa-solid fa-star text-[10px] text-yellow-400"></i> <span id="hero-rating">8.8</span>
+                        </span>
+                    </div>
+
+                    <h1 id="hero-title" class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">Night of the Living Dead</h1>
+
+                    <div class="flex items-center gap-3 text-xs text-mono-300 font-medium">
+                        <span id="hero-year">1968</span><span>•</span>
+                        <span id="hero-genre" class="text-mono-200">Korku / Bilim Kurgu</span><span>•</span>
+                        <span id="hero-duration">1s 36dk</span>
+                        <span class="border border-mono-700 px-1 py-0.2 rounded text-[10px] text-mono-400">Yönetmen: George A. Romero</span>
+                    </div>
+
+                    <p id="hero-synopsis" class="text-mono-400 text-xs sm:text-sm line-clamp-3 leading-relaxed font-normal">
+                        Kırsal bir çiftlik evinde mahsur kalan bir grup insan, aniden dirilen gizemli zombi dalgasına karşı hayatta kalma mücadelesi verir. Modern korku sinemasının miladı kabul edilen kült klasik.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <button id="hero-play-btn" onclick="openPlayerModal('m1')" class="flex items-center gap-2.5 bg-white text-black hover:bg-mono-200 px-6 py-2.5 rounded-xl font-bold text-xs shadow-glow-white transition duration-200">
+                            <i class="fa-solid fa-play text-sm"></i><span>Filmi Hemen İzle</span>
+                        </button>
+                        <button id="hero-watchlist-btn" onclick="toggleWatchlist('m1')" class="flex items-center gap-2 bg-mono-900/80 hover:bg-mono-800 text-white border border-mono-700 px-5 py-2.5 rounded-xl font-medium text-xs transition duration-200">
+                            <i id="hero-watchlist-icon" class="fa-solid fa-plus text-xs"></i><span id="hero-watchlist-text">Listeme Ekle</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-mono-850 pb-4">
+                <div>
+                    <h2 id="section-heading" class="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
+                        <span class="w-1.5 h-5 bg-white rounded-full inline-block"></span>
+                        Açık Kaynak & Telifsiz Film Kataloğu
+                    </h2>
+                    <p class="text-[11px] text-mono-400">Archive.org ve Kamusal Alana (Public Domain) ait gerçek, eksiksiz filmler</p>
+                </div>
+
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    <button onclick="setActiveFilter(this, 'all')" class="filter-chip active-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-black transition">Tümü</button>
+                    <button onclick="setActiveFilter(this, 'Mystery / Thriller')" class="filter-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-mono-900 hover:bg-mono-800 text-mono-300 border border-mono-800 transition">Gizem / Gerilim</button>
+                    <button onclick="setActiveFilter(this, 'Comedy / Romance')" class="filter-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-mono-900 hover:bg-mono-800 text-mono-300 border border-mono-800 transition">Komedi</button>
+                    <button onclick="setActiveFilter(this, 'Action / Silent')" class="filter-chip px-3 py-1.5 rounded-lg text-xs font-semibold bg-mono-900 hover:bg-mono-800 text-mono-300 border border-mono-800 transition">Aksiyon & Sessiz Sinema</button>
+                </div>
+            </div>
+
+            <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4"></div>
+
+            <div id="empty-watchlist-msg" class="hidden text-center py-16 glass rounded-2xl p-6 max-w-sm mx-auto">
+                <div class="w-12 h-12 bg-mono-800 border border-mono-700 rounded-full flex items-center justify-center mx-auto text-mono-300 text-lg mb-3">
+                    <i class="fa-solid fa-bookmark"></i>
+                </div>
+                <h3 class="text-base font-bold text-white mb-1">Favori Listeniz Boş</h3>
+                <p class="text-mono-400 text-xs mb-4">Filmlerdeki kalp butonuna basarak beğendiğiniz içerikleri buraya ekleyebilirsiniz.</p>
+                <button onclick="filterCategory('all')" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-xs shadow-glow-white">Kataloğu Keşfet</button>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-t border-mono-850">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-mono-900 border border-mono-700 flex items-center justify-center text-white text-xs">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">AthenaMi Klasik Seçkisi</h3>
+                        <p class="text-[11px] text-mono-400">Yasal ve yüksek kalitede taranmış arşiv videoları</p>
+                    </div>
+                </div>
+            </div>
+            <div id="classic-carousel" class="flex gap-4 overflow-x-auto no-scrollbar py-1 scroll-smooth"></div>
+        </section>
+  </main>
+  
