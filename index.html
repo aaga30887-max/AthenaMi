@@ -215,4 +215,396 @@
             <div id="classic-carousel" class="flex gap-4 overflow-x-auto no-scrollbar py-1 scroll-smooth"></div>
         </section>
   </main>
+        <footer class="bg-mono-950 border-t border-mono-850 mt-16 pt-10 pb-6 text-mono-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-6 h-6 rounded bg-white text-black flex items-center justify-center font-bold text-xs">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <span class="text-lg font-extrabold text-white">Athena<span class="text-mono-500">Mi</span></span>
+                    </div>
+                    <p class="text-mono-500 text-[11px] leading-relaxed">
+                        AthenaMi, kamuya mal olmuş (Public Domain) sinema eserlerini Türkçe altyazı entegrasyonu ve minimalist siyah-beyaz arayüzle sunan telifsiz açık platformdur.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-2 text-xs">Açık Kaynak Hukuku</h4>
+                    <ul class="space-y-1 text-[11px] text-mono-400">
+                        <li><span>Public Domain Mark 1.0</span></li>
+                        <li><span>Archive.org Legal Media</span></li>
+                        <li><span>Creative Commons Zero</span></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-2 text-xs">Altyazı Teknolojisi</h4>
+                    <ul class="space-y-1 text-[11px] text-mono-400">
+                        <li><span>Embedded WebVTT Track</span></li>
+                        <li><span>Türkçe Altyazı Desteği</span></li>
+                        <li><span>Orijinal Dilde Yayın</span></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-2 text-xs">Yayınlama ve Dağıtım</h4>
+                    <p class="text-mono-500 text-[11px] mb-2 leading-relaxed">
+                        Bu platform GitHub Pages üzerinde tamamen statik HTML/JS olarak hosting ücreti ödemeden yayınlanabilir.
+                    </p>
+                    <a href="https://github.com" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs text-white bg-mono-900 border border-mono-700 px-3 py-1.5 rounded-lg hover:bg-mono-800 transition">
+                        <i class="fa-brands fa-github text-sm"></i>
+                        <span>GitHub'da Dağıt</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="border-t border-mono-900 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-mono-500">
+                <p>&copy; 2026 AthenaMi Cinema. Tüm videolar Internet Archive kamu malı lisansı altındadır.</p>
+                <div class="flex space-x-4">
+                    <span class="hover:text-white cursor-pointer">Gizlilik Politikası</span>
+                    <span class="hover:text-white cursor-pointer">Kullanım Şartları</span>
+                    <span class="hover:text-white cursor-pointer">Telif Hakları (DMCA)</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="player-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex-col transition-all duration-300">
+        <div class="p-3 sm:p-4 border-b border-mono-850 flex items-center justify-between bg-mono-950/80">
+            <div class="flex items-center space-x-3">
+                <button onclick="closePlayerModal()" class="w-8 h-8 rounded-full bg-mono-900 hover:bg-mono-800 border border-mono-700 text-mono-200 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+                <div>
+                    <h3 id="player-movie-title" class="text-sm sm:text-base font-bold text-white leading-tight">Film Başlığı</h3>
+                    <p id="player-movie-meta" class="text-[11px] text-mono-400">Yıl • Tür • Yönetmen</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <div class="relative">
+                    <button id="subtitle-toggle-btn" onclick="toggleSubDropdown()" class="bg-mono-900 hover:bg-mono-800 text-mono-200 border border-mono-700 px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-closed-captioning text-xs"></i>
+                        <span id="current-sub-label">TR Altyazı</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-mono-500"></i>
+                    </button>
+                    <div id="sub-dropdown" class="hidden absolute right-0 top-full mt-2 w-36 glass rounded-xl shadow-card p-1 z-50 text-xs">
+                        <button onclick="selectSubtitle('tr')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 text-white flex items-center justify-between">
+                            <span>Türkçe</span><i id="sub-check-tr" class="fa-solid fa-check text-[10px] text-white"></i>
+                        </button>
+                        <button onclick="selectSubtitle('en')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 text-mono-300 flex items-center justify-between">
+                            <span>English</span><i id="sub-check-en" class="fa-solid fa-check text-[10px] text-white hidden"></i>
+                        </button>
+                        <button onclick="selectSubtitle('off')" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-white/10 text-mono-400 flex items-center justify-between">
+                            <span>Kapalı</span><i id="sub-check-off" class="fa-solid fa-check text-[10px] text-white hidden"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-mono-900 border border-mono-700 text-mono-300 px-2 py-1 rounded-lg text-[10px] font-mono">HD 1080p</div>
+            </div>
+        </div>
+
+        <div class="flex-grow relative flex items-center justify-center bg-black overflow-hidden">
+            <video id="main-video" class="w-full h-full max-h-[85vh] object-contain" controls crossorigin="anonymous" playsinline>
+                <source id="video-source" src="" type="video/mp4">
+                <track id="track-tr" kind="subtitles" srclang="tr" label="Türkçe" default>
+                <track id="track-en" kind="subtitles" srclang="en" label="English">
+                Tarayıcınız HTML5 video oynatıcıyı desteklemiyor.
+            </video>
+        </div>
+        <div id="series-episodes-bar" class="hidden p-3 bg-mono-900 border-t border-mono-800 flex items-center space-x-2 overflow-x-auto">
+            <span class="text-xs font-bold text-mono-300 pr-2">Bölümler:</span>
+        </div>
+    </div>
+
+    <script>
+        const mediaDatabase = [
+            {
+                id: 'm1', title: 'Night of the Living Dead', year: '1968', duration: '1s 36dk', genre: 'Sci-Fi / Horror', category: 'movie', director: 'George A. Romero', rating: '8.8',
+                poster: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80',
+                banner: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1920&q=80',
+                synopsis: 'Kırsal bir çiftlik evinde mahsur kalan bir grup insan, aniden dirilen zombilere karşı hayatta kalma mücadelesi verir.',
+                videoUrl: 'https://archive.org/download/night_of_the_living_dead/night_of_the_living_dead.mp4',
+                subtitles: {
+                    tr: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:10.000\n[AthenaMi Sinema Kulübü Sunar]\nNight of the Living Dead (1968)\n\n2\n00:00:12.000 --> 00:00:16.000\nOnlar geliyor, Barbra... Seni almaya geliyorlar!\n\n3\n00:00:20.000 --> 00:00:25.000\nEvin kapılarını ve pencerelerini derhal tahtalarla kapatmalıyız."),
+                    en: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:10.000\n[AthenaMi Cinema Presents]\nNight of the Living Dead (1968)\n\n2\n00:00:12.000 --> 00:00:16.000\nThey're coming to get you, Barbra!\n\n3\n00:00:20.000 --> 00:00:25.000\nWe must board up the windows and doors immediately.")
+                }
+            },
+            {
+                id: 'm2', title: 'Charade', year: '1963', duration: '1s 53dk', genre: 'Mystery / Thriller', category: 'movie', director: 'Stanley Donen', rating: '8.5',
+                poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80',
+                banner: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80',
+                synopsis: 'Pariste geçen, Audrey Hepburn ve Cary Grantin başrollerini paylaştığı nefes kesici bir romantik gerilim ve cinayet gizemi.',
+                videoUrl: 'https://archive.org/download/Charade_1963/Charade_1963_512kb.mp4',
+                subtitles: {
+                    tr: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:04.000 --> 00:00:08.000\nCharade - Pariste Tehlikeli Oyun\n\n2\n00:00:10.000 --> 00:00:15.000\nKocamın gizemli serveti nerede ve onu kim öldürdü?"),
+                    en: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:04.000 --> 00:00:08.000\nCharade - Mystery in Paris\n\n2\n00:00:10.000 --> 00:00:15.000\nWhere is my husbands secret fortune?")
+                }
+            },
+            {
+                id: 'm3', title: 'His Girl Friday', year: '1940', duration: '1s 32dk', genre: 'Comedy / Romance', category: 'movie', director: 'Howard Hawks', rating: '8.2',
+                poster: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80',
+                banner: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&q=80',
+                synopsis: 'Gazete editörü Walter Burns, yetenekli gazeteci eski eşinin evlenip mesleği bırakmasını engellemek için büyük bir haber oyunu kurar.',
+                videoUrl: 'https://archive.org/download/his_girl_friday/his_girl_friday_512kb.mp4',
+                subtitles: {
+                    tr: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\nSen harika bir gazetecisin Hildy, bu haberden kaçamazsın!"),
+                    en: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\nYoure a great newspaper writer, Hildy!")
+                }
+            },
+            {
+                id: 'm4', title: 'The General', year: '1926', duration: '1s 18dk', genre: 'Action / Silent', category: 'movie', director: 'Buster Keaton', rating: '8.6',
+                poster: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80',
+                banner: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1920&q=80',
+                synopsis: 'Buster Keatonin unutulmaz komedi ve aksiyon şaheseri. Çalınan lokomotifini ve aşkını kurtarmak için tren hattında tek başına mücadele verir.',
+                videoUrl: 'https://archive.org/download/TheGeneralBusterKeaton/TheGeneral_512kb.mp4',
+                subtitles: {
+                    tr: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\n[Sessiz Sinema - Özel Müzik Eşliğinde]\nGeneral Lokomotifi"),
+                    en: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\n[Silent Cinema Masterpiece]\nThe General Engine")
+                }
+            },
+            {
+                id: 'm5', title: 'Carnival of Souls', year: '1962', duration: '1s 18dk', genre: 'Sci-Fi / Horror', category: 'movie', director: 'Herk Harvey', rating: '8.0',
+                poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80',
+                banner: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1920&q=80',
+                synopsis: 'Geçirdiği trafik kazasından sağ kurtulan genç bir kadının peşini bırakmayan gizemli hayaletler ve sürreal bir lunapark atmosferi.',
+                videoUrl: 'https://archive.org/download/CarnivalofSouls/CarnivalofSouls_512kb.mp4',
+                subtitles: {
+                    tr: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\nO aynadaki yüz de neydi? Beni takip ediyorlar!"),
+                    en: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\nWhat was that face in the mirror?")
+                }
+            },
+            {
+                id: 'm6', title: 'Sherlock Holmes: Dressed to Kill', year: '1946', duration: '1s 12dk', genre: 'Mystery / Thriller', category: 'series', director: 'Roy William Neill', rating: '8.1',
+                poster: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80',
+                banner: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=1920&q=80',
+                synopsis: 'Sherlock Holmes ve Dr. Watson, hapishanede yapılan üç müzik kutusunun içine gizlenmiş çalıntı İngiltere Bankası kalıplarının peşine düşer.',
+                videoUrl: 'https://archive.org/download/dressed_to_kill/dressed_to_kill_512kb.mp4',
+                subtitles: {
+                    tr: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\nAzizim Watson, bu müzik kutusundaki melodi gizli bir şifre barındırıyor!"),
+                    en: "data:text/vtt;charset=utf-8," + encodeURIComponent("WEBVTT\n\n1\n00:00:05.000 --> 00:00:09.000\nMy dear Watson, this music box contains a secret code!")
+                }
+            }
+        ];
+
+        let watchlist = JSON.parse(localStorage.getItem('athenami_watchlist')) || [];
+        let currentFilter = 'all';
+        let currentActiveMovie = mediaDatabase[0];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMediaGrid(mediaDatabase);
+            renderCarousel(mediaDatabase);
+            updateWatchlistCount();
+            setupSearchListeners();
+        });
+
+        function renderMediaGrid(data) {
+            const grid = document.getElementById('media-grid');
+            const emptyMsg = document.getElementById('empty-watchlist-msg');
+            grid.innerHTML = '';
+            if (data.length === 0) { emptyMsg.classList.remove('hidden'); return; }
+            else { emptyMsg.classList.add('hidden'); }
+
+            data.forEach(item => {
+                const isWatchlisted = watchlist.includes(item.id);
+                const card = document.createElement('div');
+                card.className = 'group relative rounded-xl bg-mono-900 border border-mono-800 hover:border-mono-500 overflow-hidden transition-all duration-300 flex flex-col justify-between shadow-card hover:shadow-glow-sm cursor-pointer';
+                card.innerHTML = `
+                    <div class="relative aspect-[2/3] overflow-hidden bg-mono-950">
+                        <img src="${item.poster}" alt="${item.title}" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition"></div>
+                        <div class="absolute top-2 left-2 flex items-center gap-1">
+                            <span class="bg-black/70 backdrop-blur-md text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded border border-mono-700">
+                                <i class="fa-solid fa-star text-yellow-400 text-[8px] mr-0.5"></i>${item.rating}
+                            </span>
+                        </div>
+                        <button onclick="event.stopPropagation(); toggleWatchlist('${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-white hover:text-black border border-mono-700 text-white flex items-center justify-center transition">
+                            <i class="${isWatchlisted ? 'fa-solid text-red-500' : 'fa-regular'} fa-heart text-xs"></i>
+                        </button>
+                        <div onclick="openPlayerModal('${item.id}')" class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black/40">
+                            <div class="w-11 h-11 rounded-full bg-white text-black flex items-center justify-center shadow-glow-white scale-75 group-hover:scale-100 transition duration-300">
+                                <i class="fa-solid fa-play text-sm ml-0.5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 space-y-1 bg-mono-900" onclick="openPlayerModal('${item.id}')">
+                        <div class="flex items-center justify-between text-[10px] text-mono-400 font-medium"><span>${item.year}</span><span>${item.duration}</span></div>
+                        <h4 class="text-xs font-bold text-white truncate group-hover:text-mono-200 transition">${item.title}</h4>
+                        <p class="text-[10px] text-mono-500 truncate">${item.genre}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCarousel(data) {
+            const carousel = document.getElementById('classic-carousel');
+            carousel.innerHTML = '';
+            data.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'flex-shrink-0 w-64 glass rounded-xl overflow-hidden glow-border cursor-pointer group';
+                itemEl.onclick = () => openPlayerModal(item.id);
+                itemEl.innerHTML = `
+                    <div class="relative h-28 overflow-hidden">
+                        <img src="${item.banner}" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-mono-950 via-transparent to-transparent"></div>
+                        <span class="absolute bottom-2 left-2 bg-black/70 text-mono-200 text-[9px] px-1.5 py-0.5 rounded border border-mono-700 font-mono">${item.year}</span>
+                    </div>
+                    <div class="p-2.5 space-y-0.5">
+                        <h5 class="text-xs font-bold text-white truncate">${item.title}</h5>
+                        <p class="text-[10px] text-mono-400 truncate">${item.director}</p>
+                    </div>
+                `;
+                carousel.appendChild(itemEl);
+            });
+        }
+
+        function toggleWatchlist(movieId) {
+            const index = watchlist.indexOf(movieId);
+            if (index === -1) { watchlist.push(movieId); showToast('Film listenize eklendi.'); }
+            else { watchlist.splice(index, 1); showToast('Film listenizden çıkarıldı.'); }
+            localStorage.setItem('athenami_watchlist', JSON.stringify(watchlist));
+            updateWatchlistCount();
+            if (currentFilter === 'watchlist') { showMyList(); } else { renderMediaGrid(getFilteredData()); }
+            if (currentActiveMovie && currentActiveMovie.id === movieId) { updateHeroWatchlistButton(movieId); }
+        }
+
+        function updateWatchlistCount() {
+            const count = watchlist.length;
+            document.getElementById('watchlist-count').innerText = count;
+            do
+                cument.getElementById('mobile-watchlist-count').innerText = count;
+        }
+
+        function showMyList() {
+            currentFilter = 'watchlist';
+            document.getElementById('section-heading').innerHTML = `<span class="w-1.5 h-5 bg-white rounded-full inline-block"></span>Favori İzleme Listeniz`;
+            renderMediaGrid(mediaDatabase.filter(m => watchlist.includes(m.id)));
+        }
+
+        function filterCategory(cat) {
+            currentFilter = cat;
+            document.getElementById('section-heading').innerHTML = `<span class="w-1.5 h-5 bg-white rounded-full inline-block"></span>${cat === 'series' ? 'Seri Yayınlar & Sherlock Klasikleri' : 'Açık Kaynak & Telifsiz Film Kataloğu'}`;
+            renderMediaGrid(getFilteredData());
+        }
+
+        function filterGenre(genre) {
+            currentFilter = genre;
+            document.getElementById('section-heading').innerHTML = `<span class="w-1.5 h-5 bg-white rounded-full inline-block"></span>${genre} Kategorisi`;
+            renderMediaGrid(getFilteredData());
+        }
+
+        function getFilteredData() {
+            if (currentFilter === 'all') return mediaDatabase;
+            if (currentFilter === 'series') return mediaDatabase.filter(m => m.category === 'series');
+            if (currentFilter === 'watchlist') return mediaDatabase.filter(m => watchlist.includes(m.id));
+            return mediaDatabase.filter(m => m.genre.includes(currentFilter));
+        }
+
+        function setActiveFilter(btn, filterVal) {
+            document.querySelectorAll('.filter-chip').forEach(c => { c.classList.remove('bg-white', 'text-black'); c.classList.add('bg-mono-900', 'text-mono-300'); });
+            btn.classList.remove('bg-mono-900', 'text-mono-300'); btn.classList.add('bg-white', 'text-black');
+            if (filterVal === 'all') filterCategory('all'); else filterGenre(filterVal);
+        }
+
+        function setupSearchListeners() {
+            const input = document.getElementById('search-input');
+            const dropdown = document.getElementById('search-dropdown');
+            const clearBtn = document.getElementById('clear-search');
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                    renderSearchDropdown(mediaDatabase.filter(m => m.title.toLowerCase().includes(query) || m.director.toLowerCase().includes(query) || m.genre.toLowerCase().includes(query)));
+                } else { clearBtn.classList.add('hidden'); dropdown.classList.add('hidden'); }
+            });
+        }
+
+        function renderSearchDropdown(results) {
+            const dropdown = document.getElementById('search-dropdown');
+            dropdown.innerHTML = '';
+            if (results.length === 0) { dropdown.innerHTML = `<div class="p-3 text-xs text-mono-400 text-center">Sonuç bulunamadı.</div>`; }
+            else {
+                results.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'p-2 hover:bg-white/10 rounded-lg cursor-pointer flex items-center space-x-3 transition';
+                    el.onclick = () => { openPlayerModal(item.id); dropdown.classList.add('hidden'); };
+                    el.innerHTML = `<img src="${item.poster}" class="w-8 h-11 object-cover rounded bg-mono-800"><div class="overflow-hidden"><h5 class="text-xs font-bold text-white truncate">${item.title}</h5><p class="text-[10px] text-mono-400">${item.year} • ${item.genre}</p></div>`;
+                    dropdown.appendChild(el);
+                });
+            }
+            dropdown.classList.remove('hidden');
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            document.getElementById('search-dropdown').classList.add('hidden');
+        }
+
+        function openPlayerModal(movieId) {
+            const movie = mediaDatabase.find(m => m.id === movieId);
+            if (!movie) return;
+            currentActiveMovie = movie;
+            document.getElementById('player-movie-title').innerText = movie.title;
+            document.getElementById('player-movie-meta').innerText = `${movie.year} • ${movie.genre} • Yönetmen: ${movie.director}`;
+            const video = document.getElementById('main-video');
+            document.getElementById('video-source').src = movie.videoUrl;
+            if (movie.subtitles) {
+                document.getElementById('track-tr').src = movie.subtitles.tr || '';
+                document.getElementById('track-en').src = movie.subtitles.en || '';
+            }
+            video.load();
+            document.getElementById('player-modal').classList.remove('hidden');
+            document.getElementById('player-modal').classList.add('flex');
+            video.play().catch(() => {});
+        }
+
+        function closePlayerModal() {
+            const video = document.getElementById('main-video');
+            video.pause();
+            document.getElementById('player-modal').classList.add('hidden');
+            document.getElementById('player-modal').classList.remove('flex');
+        }
+
+        function toggleSubDropdown() { document.getElementById('sub-dropdown').classList.toggle('hidden'); }
+
+        function selectSubtitle(lang) {
+            const video = document.getElementById('main-video');
+            const tracks = video.textTracks;
+            document.getElementById('sub-check-tr').classList.add('hidden');
+            document.getElementById('sub-check-en').classList.add('hidden');
+            document.getElementById('sub-check-off').classList.add('hidden');
+            for (let i = 0; i < tracks.length; i++) { tracks[i].mode = 'disabled'; }
+            if (lang === 'tr') { if (tracks[0]) tracks[0].mode = 'showing'; document.getElementById('current-sub-label').innerText = 'TR Altyazı'; document.getElementById('sub-check-tr').classList.remove('hidden'); }
+            else if (lang === 'en') { if (tracks[1]) tracks[1].mode = 'showing'; document.getElementById('current-sub-label').innerText = 'EN Subtitle'; document.getElementById('sub-check-en').classList.remove('hidden'); }
+            else { document.getElementById('current-sub-label').innerText = 'Kapalı'; document.getElementById('sub-check-off').classList.remove('hidden'); }
+            toggleSubDropdown();
+        }
+
+        function updateHeroWatchlistButton(movieId) {
+            const isWatchlisted = watchlist.includes(movieId);
+            const icon = document.getElementById('hero-watchlist-icon');
+            const text = document.getElementById('hero-watchlist-text');
+            if (isWatchlisted) { icon.className = 'fa-solid fa-check text-xs text-white'; text.innerText = 'Listenizde'; }
+            else { icon.className = 'fa-solid fa-plus text-xs'; text.innerText = 'Listeme Ekle'; }
+        }
+
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'glass px-4 py-2.5 rounded-xl text-xs text-white shadow-card border border-mono-700 flex items-center gap-2 pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0';
+            toast.innerHTML = `<i class="fa-solid fa-circle-info text-mono-300"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-2'); setTimeout(() => toast.remove(), 300); }, 2500);
+        }
+    </script>
+</body>
+</html>
+
   
